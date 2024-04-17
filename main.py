@@ -6,7 +6,7 @@ from torchvision import transforms
 model = torch.load("resnet/model/trash.pth")
 model.eval()
 
-image = iio.imread("glass_001.jpg")
+image = iio.imread("test.jpg")
 
 transform = transforms.Compose([
       transforms.ToPILImage(),
@@ -18,7 +18,7 @@ device = torch.device("cuda")
 
 image = transform(image).unsqueeze(0).to(device)
 
-print(classify_waste(model, image))
+print(classify_waste(model, image, True))
 
 
 
