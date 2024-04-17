@@ -1,5 +1,5 @@
 import cv2
-import imageio
+import imageio.v2 as iio
 import numpy as np
 from skimage.metrics import structural_similarity as compare_ssim
 from time import sleep
@@ -31,7 +31,7 @@ def recognition_loop(cap, reference_image):
         ret, frame = cap.read() 
         
         if is_frame_different_from_image(frame, reference_image):
-            imageio.imwrite('c2.jpg', imageio.imread('c1.jpg'))
+            iio.imwrite('c2.jpg', iio.imread('c1.jpg'))
             #sleep(0.5)
             print("Object detected.")
 
@@ -48,8 +48,8 @@ def recognition_loop(cap, reference_image):
                     cv2.imwrite('c2.jpg', frame)
                     sleep(0.25)
             
-        else:
-            print("Nothing to declare.")
+        
+            
 
         # video preview
         # cv2.imshow('Frame', frame)
@@ -57,8 +57,9 @@ def recognition_loop(cap, reference_image):
         if cv2.waitKey(1) & 0xFF == ord('q') or object_captured:
             break
 
-def main():
+def get_waste_image():
     # Get Background Reference
+
     cap = cv2.VideoCapture(2) 
     ret,frame = cap.read()
     cv2.imwrite('c1.jpg',frame)
@@ -72,5 +73,4 @@ def main():
     # Release the capture and close all OpenCV windows
     cap.release()
     # cv2.destroyAllWindows()
-
-main()
+    return iio.imread("waste.jpg")

@@ -2,3 +2,5 @@ torch
 torchvision
 torchaudio
 imageio
+opencv-python
+scikit-image
