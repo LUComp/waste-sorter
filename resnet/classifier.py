@@ -7,5 +7,5 @@ def classify_waste(model, img):
         return get_label(out)
 
 def get_label(x):
-    labels = ["paper", "cardboard", "metal", "cardboard", "plastic", "trash"]
+    labels = ["paper", "cardboard", "metal", "trash", "plastic", "glass"]
     return(labels[x])

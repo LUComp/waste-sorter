@@ -6,7 +6,7 @@ from torchvision import transforms
 model = torch.load("resnet/model/trash.pth")
 model.eval()
 
-image = iio.imread("paper_008.jpg")
+image = iio.imread("glass_001.jpg")
 
 transform = transforms.Compose([
       transforms.ToPILImage(),
