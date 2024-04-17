@@ -18,7 +18,7 @@ def process_image(image):
 model = torch.load("resnet/model/trash.pth")
 model.eval()
 
-image = iio.imread("test.jpg")
+image = iio.imread("detection/waste.jpg")
 
 process_image(image)
 
