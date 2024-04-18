@@ -7,9 +7,9 @@ import seriallib
 model = torch.load("resnet/model/trash.pth")
 model.eval()
 
-# armcontroller = seriallib.ArmController("mock") # dont connect to arm over serial, just say it is successful instantly
+armcontroller = seriallib.ArmController("mock") # dont connect to arm over serial, just say it is successful instantly
 ## ensure arduino ide/anything else using the serial port is closed.
-armcontroller = seriallib.ArmController("/dev/serial/by-id/usb-Arduino__www.arduino.cc__0043_8513332303635140E1A0-if00") # this is correct for the standard arduino on linux
+# armcontroller = seriallib.ArmController("/dev/serial/by-id/usb-Arduino__www.arduino.cc__0043_8513332303635140E1A0-if00") # this is correct for the standard arduino on linux
 # armcontroller = seriallib.ArmController("COM3") # windows, change to match serial port shown in arduino ide?
 
 bin1_labels = ["metal", "glass"]
