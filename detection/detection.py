@@ -52,17 +52,17 @@ def recognition_loop(cap, reference_image):
         if cv2.waitKey(1) & 0xFF == ord('q') or object_captured:
             break
 
-def get_waste_image():
+def get_waste_image(camera = 2):
     # Get Background Reference
 
-    cap = cv2.VideoCapture(2) 
+    cap = cv2.VideoCapture(camera) 
     _, frame = cap.read()
     cv2.imwrite('c1.jpg',frame)
     cap.release()
     reference_image = "c1.jpg"
 
     # Set camera to rolling
-    cap = cv2.VideoCapture(2) 
+    cap = cv2.VideoCapture(camera) 
     recognition_loop(cap, reference_image)
     # Release the capture and close all OpenCV windows
     cap.release()

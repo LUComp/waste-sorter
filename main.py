@@ -20,7 +20,7 @@ bin3_labels = ["trash", "plastic"]
 def main():
       while True:
             # detect if there is an object
-            img = get_waste_image()
+            img = get_waste_image(0)
 
             # img present, pickup with arm.
             armcontroller.grab()
