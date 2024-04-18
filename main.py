@@ -1,7 +1,6 @@
 import torch
 from resnet.classifier import classify_waste
 from detection.detection import get_waste_image
-import cv2
 
 model = torch.load("resnet/model/trash.pth")
 model.eval()

@@ -42,7 +42,6 @@ def recognition_loop(cap, reference_image):
                 if not is_frame_different_from_image(frame,reference_image='c2.jpg'):
                     cv2.imwrite('waste.jpg', frame)
                     object_captured = True
-                    
                     break
                 else:
                     cv2.imwrite('c2.jpg', frame)
