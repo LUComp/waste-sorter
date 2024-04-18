@@ -3,6 +3,7 @@ import imageio.v2 as iio
 import numpy as np
 from skimage.metrics import structural_similarity as compare_ssim
 from time import sleep
+import os
 
 # Compare current frame to background
 def compare_frame_with_image(frame, reference_image):
@@ -68,4 +69,12 @@ def get_waste_image():
     # Release the capture and close all OpenCV windows
     cap.release()
     # cv2.destroyAllWindows()
-    return iio.imread("waste.jpg")
+    waste_image = iio.imread("waste.jpg")
+
+    if  os.path.exists("c1.jpg") and os.path.exists("c2.jpg") and os.path.exists("waste.jpg"):
+        os.remove("c1.jpg")
+        os.remove("c2.jpg")
+        os.remove("waste.jpg")
+
+    return waste_image
+
