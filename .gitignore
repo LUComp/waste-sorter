@@ -1,1 +1,7 @@
 *.pyc
+*.jpg
+resnet/training/dataset
+resnet/training/runs
+venv/
+__pycache__/
+
