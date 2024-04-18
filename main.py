@@ -1,4 +1,5 @@
 import seriallib.armcontroller
+import seriallib.exceptions
 import torch
 from resnet.classifier import classify_waste
 from detection.detection import get_waste_image
@@ -28,14 +29,19 @@ def main():
             # process the image and classify it
             label = classify_waste(model, img, output_as_string=True)
             
-            if label in bin1_labels:
-                  armcontroller.move_bin1()
-            elif label in bin2_labels:
-                  armcontroller.move_bin2()
-            else:
-                  # fallback to bin 3
-                  armcontroller.move_bin3()
-                           
+            try:
+                  if label in bin1_labels:
+                        armcontroller.move_bin1()
+                  elif label in bin2_labels:
+                        armcontroller.move_bin2()
+                  else:
+                        # fallback to bin 3
+                        armcontroller.move_bin3()
+            except seriallib.exceptions.ArmException as e:
+                  print(e)
+            
             print(label)
+
+            break
 
 main()
