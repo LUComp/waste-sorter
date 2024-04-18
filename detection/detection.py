@@ -48,9 +48,6 @@ def recognition_loop(cap, reference_image):
                     cv2.imwrite('c2.jpg', frame)
                     sleep(0.25)
             
-        
-            
-
         # video preview
         # cv2.imshow('Frame', frame)
         
