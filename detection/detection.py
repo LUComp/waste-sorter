@@ -1,6 +1,5 @@
 import cv2
 import imageio.v2 as iio
-import numpy as np
 from skimage.metrics import structural_similarity as compare_ssim
 from time import sleep
 import os
@@ -29,8 +28,7 @@ def is_frame_different_from_image(frame, reference_image, threshold_ssim=0.95):
 def recognition_loop(cap, reference_image):
     while True:
         object_captured = False
-        ret, frame = cap.read() 
-        
+        _, frame = cap.read() 
         if is_frame_different_from_image(frame, reference_image):
             iio.imwrite('c2.jpg', iio.imread('c1.jpg'))
             #sleep(0.5)
@@ -38,7 +36,7 @@ def recognition_loop(cap, reference_image):
 
             while True:
                 # Take reference picture C2. Take photos every frame, to detect object movement. Replace c2 with new photo
-                ret, frame = cap.read()
+                _, frame = cap.read()
 
                 if not is_frame_different_from_image(frame,reference_image='c2.jpg'):
                     cv2.imwrite('waste.jpg', frame)
@@ -58,7 +56,7 @@ def get_waste_image():
     # Get Background Reference
 
     cap = cv2.VideoCapture(2) 
-    ret,frame = cap.read()
+    _, frame = cap.read()
     cv2.imwrite('c1.jpg',frame)
     cap.release()
     reference_image = "c1.jpg"
