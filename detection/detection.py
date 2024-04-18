@@ -25,7 +25,7 @@ def detect_movement():
     
 
 def detect_object():
-    cap = cv2.VideoCapture(4)  # Try different API here
+    cap = cv2.VideoCapture(0)  # Try different API here
     ret, frame = cap.read()
     cv2.imwrite("c3.jpg", frame)
     print("RET", ret)
