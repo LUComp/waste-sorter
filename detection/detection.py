@@ -66,7 +66,6 @@ def get_waste_image():
     cap.release()
     reference_image = "c1.jpg"
 
-
     # Set camera to rolling
     cap = cv2.VideoCapture(2) 
     recognition_loop(cap, reference_image)

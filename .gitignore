@@ -1,2 +1,3 @@
 *.pyc
 *.jpg
+resnet/training/dataset
