@@ -1,5 +1,7 @@
 import seriallib.armcontroller
 import seriallib.exceptions
+import seriallib.armcontroller
+import seriallib.exceptions
 import torch
 from resnet.classifier import classify_waste
 from detection.detection import detect_movement, detect_object
