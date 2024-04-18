@@ -72,7 +72,6 @@ def get_waste_image():
     if  os.path.exists("c1.jpg") and os.path.exists("c2.jpg") and os.path.exists("waste.jpg"):
         os.remove("c1.jpg")
         os.remove("c2.jpg")
-        os.remove("waste.jpg")
 
     return waste_image
 
