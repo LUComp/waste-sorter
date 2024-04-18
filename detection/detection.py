@@ -13,7 +13,7 @@ def compare_frame_with_image(frame, reference_image):
     return mse, ssim
 
 # Compare current frame from image
-def is_frame_different_from_image(frame, reference_image, threshold_ssim=0.88):
+def is_frame_different_from_image(frame, reference_image, threshold_ssim=0.5):
     img_reference = cv2.imread(reference_image)
     frame_resized = cv2.resize(frame, (img_reference.shape[1], img_reference.shape[0]))
     gray_frame = cv2.cvtColor(frame_resized, cv2.COLOR_BGR2GRAY)

@@ -14,8 +14,8 @@ model.eval()
 armcontroller = seriallib.ArmController("/dev/serial/by-id/usb-Arduino__www.arduino.cc__0043_8513332303635140E1A0-if00") # this is correct for the standard arduino on linux
 # armcontroller = seriallib.ArmController("COM3") # windows, change to match serial port shown in arduino ide?
 
-bin1_labels = ["plastic", "glass", "metal"]
-bin2_labels = ["misc", "cardboard", "paper"]
+bin1_labels = ["plastic", "glass", "paper"]
+bin2_labels = ["misc", "cardboard", "metal"]
 
 def main():
       while True:
