@@ -1,7 +1,9 @@
 *.pyc
 *.jpg
-resnet/training/dataset
-resnet/training/runs
+classification/dataset
+classification/notebooks/runs
+classification/notebooks/trash.pth
+classification/notebooks/yolov5s.pt
 venv/
 __pycache__/
 
