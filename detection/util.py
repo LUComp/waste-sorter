@@ -1,7 +1,5 @@
-import torch
 import cv2
 import numpy as np
-import ssl
 
 def process_image(image0, model):
     image = cv2.imread(image0)
