@@ -35,4 +35,9 @@ def process_image(image0, model):
         area = cv2.contourArea(contour)
         if area > 1000:
             x, y, w, h = cv2.boundingRect(contour)
-    return (x, y), h, w
+
+    # return (x, y), h, w
+    return image
+
+processed_image = process_image()
+cv2.imshow('Processed ima',process_image)
