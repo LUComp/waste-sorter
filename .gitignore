@@ -1,9 +1,6 @@
 *.jpg
-classification/dataset
-classification/notebooks/runs
-classification/notebooks/trash.pth
-classification/notebooks/yolov5s.pt
-venv/
+dataset/
+checkpoints/*
 __pycache__/
 
 
