@@ -1,6 +1,0 @@
-torch
-torchvision
-imageio
-opencv-python
-scikit-image
-git+https://github.com/CompsocInternational/seriallib.git
