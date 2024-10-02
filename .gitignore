@@ -2,6 +2,9 @@
 resnet/training/dataset
 resnet/training/runs
 venv/
+
+dataset/
+checkpoints/*
 __pycache__/
 
 # Byte-compiled / optimized / DLL files
