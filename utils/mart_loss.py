@@ -20,12 +20,15 @@ def mart_loss(model,
     if distance == 'l_inf':
         for _ in range(perturb_steps):
             x_adv.requires_grad_()
+            torch.cuda.empty_cache()  # Ensure the cache is emptied before adversarial example generation
             with torch.enable_grad():
                 loss_ce = F.cross_entropy(model(x_adv), y)
             grad = torch.autograd.grad(loss_ce, [x_adv])[0]
             x_adv = x_adv.detach() + step_size * torch.sign(grad.detach())
             x_adv = torch.min(torch.max(x_adv, x_natural - epsilon), x_natural + epsilon)
             x_adv = torch.clamp(x_adv, 0.0, 1.0)
+            torch.cuda.empty_cache()  # After computation to ensure all temporary tensors are cleared
+
     else:
         x_adv = torch.clamp(x_adv, 0.0, 1.0)
     model.train()

@@ -13,7 +13,7 @@ def process_image(image0, model):
     df = results.pandas().xyxy[0]
 
     # Loop for detected objects
-    for index, row in df.iterrows():
+    for _, row in df.iterrows():
         # Coordinates
         x_min = int(row['xmin'])
         y_min = int(row['ymin'])
@@ -35,4 +35,9 @@ def process_image(image0, model):
         area = cv2.contourArea(contour)
         if area > 1000:
             x, y, w, h = cv2.boundingRect(contour)
-    return (x, y), h, w
+
+    # return (x, y), h, w
+    return image
+
+processed_image = process_image()
+cv2.imshow('Processed ima',process_image)
