@@ -13,7 +13,7 @@ def process_image(image0, model):
     df = results.pandas().xyxy[0]
 
     # Loop for detected objects
-    for index, row in df.iterrows():
+    for _, row in df.iterrows():
         # Coordinates
         x_min = int(row['xmin'])
         y_min = int(row['ymin'])
