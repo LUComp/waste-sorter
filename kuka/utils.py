@@ -1,4 +1,5 @@
 import math
+from constants import *
 
 def calculate_base(angle_degrees, height):
     
@@ -7,17 +8,11 @@ def calculate_base(angle_degrees, height):
     
     return base
 
-def pixels2mm(x_pixel, y_pixel, w_pixel, h_pixel, x_pos_mm = 1250, y_pos_mm = 550, z_pos_mm = 2500):
-    base_pos = {"x": x_pos_mm, "y": y_pos_mm, "z": z_pos_mm}
+def pixels2mm(x_pixel, y_pixel, w_pixel, h_pixel):
     # camera resolution 1080/1920
     # camera verticle angle 85, horizontal 50
-    v_ang = 42.5
-    h_ang = 25
-
-    w_mm = calculate_base(v_ang, base_pos["z"])
-    h_mm = calculate_base(h_ang, base_pos["z"])
-
-    # print(f"{x_width}   {y_width}")
+    w_mm = calculate_base(CAM_X_ANG, Z_HOME) * 2
+    h_mm = calculate_base(CAM_Y_ANG, Z_HOME) * 2
 
     x_obj_mid = x_pixel + w_pixel/2
     y_obj_mid = y_pixel + h_pixel/2
@@ -32,7 +27,6 @@ def pixels2mm(x_pixel, y_pixel, w_pixel, h_pixel, x_pos_mm = 1250, y_pos_mm = 55
     else:
         x_ratio = 0
     
-
     if y_ratio > 1:
         y_ratio -= 2
     elif y_ratio < 1:
@@ -43,8 +37,8 @@ def pixels2mm(x_pixel, y_pixel, w_pixel, h_pixel, x_pos_mm = 1250, y_pos_mm = 55
     x_delta = w_mm*x_ratio
     y_delta = h_mm*y_ratio
 
-    x_mm = base_pos["x"] + x_delta
-    y_mm = base_pos["y"] + y_delta
+    x_mm = X_HOME + x_delta
+    y_mm = Y_HOME + y_delta
 
     return x_mm, y_mm, w_mm, h_mm
 
