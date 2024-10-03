@@ -2,11 +2,10 @@
 Description=rpi-server
 
 [Service]
-User=kuka
-ExecStart=/usr/bin/python /home/kuka/repos/waste-sorter/rpi/server.py
+ExecStart=/usr/bin/python /home/kuka/repos/waste-sorter/rp/server.py
 
-WorkingDirectory=/home/kuka/repos/waste-sorter/rpi
+WorkingDirectory=/home/kuka/repos/waste-sorter/rp
 Restart=always
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
