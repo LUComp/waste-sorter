@@ -40,7 +40,9 @@ if __name__ == "__main__":
             print("Ready to accept connection...")
             client_socket, client_address = server_socket.accept()
             try:
-                handle_client(client_socket, client_address)        
+                handle_client(client_socket, client_address)
+            except bluetooth.BluetoothError as e:
+                print(f"Client disconnected: {e.strerror}")
             finally:
                 # Close the sockets
                 client_socket.close()
