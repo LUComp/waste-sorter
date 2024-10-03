@@ -1,7 +1,5 @@
 import cv2
 from PIL import Image, ImageTk
-import numpy as np
-from main import control_panel, cap, model
 
 def process_frame(frame, model):
     img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -20,7 +18,7 @@ def process_frame(frame, model):
     is_mid = False
 
     # Loop for detected objects
-    for index, row in df.iterrows():
+    for _, row in df.iterrows():
         # Coordinates
         x_min = int(row['xmin'])
         y_min = int(row['ymin'])
@@ -43,40 +41,12 @@ def process_frame(frame, model):
         
     return frame, is_mid
 
-def update_frame(cap, model):
-    # Capture frame from the webcam
-    ret, frame = cap.read()
-
-    if not ret:
-        return
-
-    # Create a mask for the green color (in BGR format, green range)
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    lower_green = np.array([40, 40, 40])  # Lower green boundary
-    upper_green = np.array([80, 255, 255])  # Upper green boundary
-    mask = cv2.inRange(hsv, lower_green, upper_green)
-
-    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    for contour in contours:
-        # Only take large contours
-        area = cv2.contourArea(contour)
-        if area > 1000:  # Filter small noises by thresholding area
-            # Draw a rectangle around the contour
-            x, y, w, h = cv2.boundingRect(contour)
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-            # Write the coordinates on the corners of the rectangle
-            cv2.putText(frame, f"({x},{y})", (x - 50, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 3)
-            cv2.putText(frame, f"({x + w},{y})", (x + w + 5, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 3)
-            cv2.putText(frame, f"({x},{y + h})", (x - 50, y + h + 20), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 3)
-            cv2.putText(frame, f"({x + w},{y + h})", (x + w + 5, y + h + 20), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 3)
-
-            # Write the width and height in the center of the rectangle
-            cv2.putText(frame, f"W: {w}", (x + w // 2 - 30, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 3)
-            cv2.putText(frame, f"H: {h}", (x - 80, y + h // 2), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 3)
+def update_frame(cap, panel):
+    
+    _, frame = cap.read()
 
     # Process the frame with YOLOv5
-    processed_frame, is_mid = process_frame(frame, model)
+    processed_frame, is_mid = process_frame(frame, panel.model)
 
     # Write the True/False message in the top left corner
     if is_mid:
@@ -93,7 +63,10 @@ def update_frame(cap, model):
 
     img_tk = ImageTk.PhotoImage(image=img_pil_resized)
 
-    return img_tk
+    panel.label_img.img_tk = img_tk
+    panel.label_img.configure(image=img_tk)
+
+    panel.label_img.after(10, update_frame, cap, panel)
      
 
 
