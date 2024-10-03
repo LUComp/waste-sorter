@@ -1,8 +1,13 @@
 *.jpg
+yolov5s.pt
 dataset/
 checkpoints/*
 __pycache__/
 
+# Ignore macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
 
 # Ignore macOS system files
 .DS_Store

@@ -1,81 +1,24 @@
-import seriallib.armcontroller
-import seriallib.exceptions
-import seriallib.armcontroller
-import seriallib.exceptions
-import torch
-from resnet.classifier import classify_waste
-from detection.detection import detect_movement, detect_object
-import seriallib
-import time
+from gui.control_panel import ControlPanel
 import cv2
-import imageio.v2 as iio
+import torch
 
-model = torch.load("resnet/model/trash.pth")
-model.eval()
+if __name__ == "__main__":      
 
-armcontroller = seriallib.ArmController("mock") # dont connect to arm over serial, just say it is successful instantly
-## ensure arduino ide/anything else using the serial port is closed.
-# armcontroller = seriallib.ArmController("/dev/serial/by-id/usb-Arduino__www.arduino.cc__0043_8513332303635140E1A0-if00") # this is correct for the standard arduino on linux
-# armcontroller = seriallib.ArmController("COM3") # windows, change to match serial port shown in arduino ide?
+      device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-bin1_labels = ["metal", "glass", "misc"]
-bin2_labels = ["paper", "cardboard", "plastic"]
+      model_d = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+      model_c = torch.load('checkpoints/trash.pth', map_location=device)
+      
+      cap = cv2.VideoCapture(0)
 
-def camera_preview():
-      starttime = time.time()
-      frame = None
+      panel = ControlPanel("Waste Sorter")
 
-      while time.time() - starttime < 0.1:
-            cap = cv2.VideoCapture(0)  # Try different API here
-            ret, frame = cap.read()
-            if not ret:
-                  print("Error: Failed to capture frame")
-                  break
-            cv2.imshow('Frame', frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                  break
+      panel.video_stream(cap, model_d, model_c)
 
+      panel.mainloop()
+
+      # Release the webcam when the window is closed
       cap.release()
-      cv2.imwrite('c2.jpg',frame)
+      cv2.destroyAllWindows()
 
 
-def main():
-
-      while True:
-
-            cap = cv2.VideoCapture(0) 
-            ret, frame = cap.read()
-            # print("RET", ret)
-            cv2.imwrite('c1.jpg',frame)
-            cap.release()
-            img = ""
-
-            while True:
-                  camera_preview()
-                  if detect_movement():
-                        img = detect_object()
-                        if img != "":
-                              break
-
-            # process the image and classify it
-            label = classify_waste(model, iio.imread(img), output_as_string=True)
-
-            print(label)
-
-            try:
-                  # img present, pickup with arm.
-                  armcontroller.grab()
-            except seriallib.exceptions.ArmException as e:
-                  print(e)
-
-            try:
-                  if label in bin1_labels:
-                        armcontroller.move_bin1()
-                  elif label in bin2_labels:
-                        armcontroller.move_bin2()
-
-            except seriallib.exceptions.ArmException as e:
-                  print(e)
-                        
-
-main()
