@@ -1,8 +1,18 @@
-def signal_object(x, y):
-    pass
+from utils import width2angle
+from kuka_comm_lib import KukaRobot
 
-def send_bin(bin):
-    pass
+def move2coords(x, y, robot: KukaRobot, home=False):
+    if home:
+        robot.goto(0, 0)
+    robot.goto(x, y)
 
-def signal_grip(width, height):
-    pass
+def move2bin(bin, w, client_socket):
+
+    signal_grip(w, client_socket)
+
+def signal_grip(w, client_socket):
+    if w == 0:
+        angle = 90
+    else:
+        angle =  width2angle(w)
+    client_socket.send(angle)
