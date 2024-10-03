@@ -3,7 +3,7 @@ from kuka_comm_lib import KukaRobot
 
 def move2coords(x, y, robot: KukaRobot, home=False):
     if home:
-        robot.goto(0, 0)
+        robot.home()
     robot.goto(x, y)
 
 def move2bin(bin, w, client_socket):
