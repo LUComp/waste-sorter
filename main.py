@@ -1,4 +1,5 @@
 from gui.control_panel import ControlPanel
+from kuka_comm_lib import KukaRobot
 import cv2
 import torch
 import bluetooth
@@ -8,11 +9,14 @@ if __name__ == "__main__":
       server_address = 'B8:27:EB:9A:19:C0'  # raspberry pi server (claw)
       port = 1  
 
+      robot = KukaRobot("192.168.128.190")
+      robot.connect()
+
       # Create the client socket
       client_socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-      client_socket.connect((server_address, port))
+      # client_socket.connect((server_address, port))
 
-      print(f"Connected to the server at {server_address}")
+      # print(f"Connected to the server at {server_address}")
 
       device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -21,9 +25,9 @@ if __name__ == "__main__":
       
       cap = cv2.VideoCapture(0)
 
-      panel = ControlPanel("Waste Sorter")
+      panel = ControlPanel(robot, "Waste Sorter")
 
-      panel.video_stream(cap, model_d, model_c)
+      panel.video_stream(cap, model_d, model_c, client_socket)
 
       panel.mainloop()
 

@@ -3,21 +3,24 @@ from PIL import Image, ImageTk
 import cv2
 from vision.detect import process_frame
 from vision.classify import classify_object
-from kuka.comms import signal_grip, signal_object
-from kuka.kinematics import pixels2mm
+from kuka.comms import signal_grip, move2coords
+from kuka.utils import pixels2mm
+from kuka_comm_lib import KukaRobot
 
 class ControlPanel(tk.Tk):
 
-    def __init__(self, title="Waste Sorter"):
+    def __init__(self, robot: KukaRobot, title="Waste Sorter"):
         super().__init__()
 
         self.title("Waste Sorter")        #set title of main window
         self.geometry("1000x600")                #set size of main window
-  
+    
         self.create_video_frame()
         self.create_labels()
 
         self.lock = False
+
+        self.robot = robot
     
     def create_video_frame(self):
         self.frame_video = tk.Frame(self, width=600, height=400)
@@ -72,7 +75,7 @@ class ControlPanel(tk.Tk):
     def update_label(self, label, text):
         label.config(text=text)
 
-    def video_stream(self, cap, model_d, model_c):
+    def video_stream(self, cap, model_d, model_c, client_socket=None):
     
         _, frame = cap.read()
 
@@ -90,11 +93,12 @@ class ControlPanel(tk.Tk):
 
             x_mm, y_mm, w_mm, h_mm = pixels2mm(x_pixel, y_pixel, w_pixel, h_pixel)
             
-            signal_object(x_mm, y_mm)
+            move2coords(x_mm, y_mm, robot)
 
-            self.after(10000, classify_object, model_d, model_c, cap)
-            self.after(10500, signal_grip, w_pixel, h_pixel)
-            self.after(11000, self.free_lock)
+            self.after(10000, classify_object, model_d, model_c, cap, client_socket, w_mm)
+            self.after(15000, signal_grip, 0, client_socket)
+            self.after(18000, move2coords, x_mm, y_mm, robot, True)
+            self.after(20000, self.free_lock)
 
         processed_frame = cv2.cvtColor(processed_frame, cv2.COLOR_BGR2RGB)
         img_pil = Image.fromarray(processed_frame)
@@ -106,4 +110,4 @@ class ControlPanel(tk.Tk):
         self.label_img.img_tk = img_tk
         self.label_img.configure(image=img_tk)
 
-        self.label_img.after(20, self.video_stream, cap, model_d, model_c)
+        self.label_img.after(20, self.video_stream, cap, model_d, model_c, client_socket)
