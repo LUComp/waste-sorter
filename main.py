@@ -1,16 +1,17 @@
-from detection.process_video import update_frame
-from ui.control_panel import ControlPanel
+from gui.control_panel import ControlPanel
 import cv2
 import torch
 
 if __name__ == "__main__":      
 
-      model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+      model_d = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+      model_c = torch.load('checkpoints/trash.pth')
+      
       cap = cv2.VideoCapture(0)
 
-      panel = ControlPanel(model, "Waste Sorter")
+      panel = ControlPanel("Waste Sorter")
 
-      update_frame(cap, panel)
+      panel.video_stream(cap, model_d, model_c)
 
       panel.mainloop()
 
