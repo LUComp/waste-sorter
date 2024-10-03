@@ -27,26 +27,50 @@ class ControlPanel(tk.Tk):
         self.label_img.grid(row=0, column=0, padx=10, pady=10)
 
     def create_labels(self):
-        self.height_label = tk.Label(self, text="Object Details")
-        self.height_label.place(x=750, y=50)
+        self.object_label = tk.Label(self, text="Object Details")
+        self.object_label.place(x=750, y=50)
+
+
+        self.object_x_label = tk.Label(self, text="X: ")
+        self.object_x_label.place(x=720, y=100)
+
+        self.object_y_label = tk.Label(self, text="Y: ")
+        self.object_y_label.place(x=820, y=100)
+
+        self.object_height_label = tk.Label(self, text="Height: ")
+        self.object_height_label.place(x=720, y=150)
+
+        self.object_width_label = tk.Label(self, text="Width: ")
+        self.object_width_label.place(x=820, y=150)
+
+
+        self.arm_label = tk.Label(self, text="Arm Coordinates ")
+        self.arm_label.place(x=750, y=300)
+
 
         self.x_label = tk.Label(self, text="X: ")
-        self.x_label.place(x=720, y=100)
+        self.x_label.place(x=720, y=400)
 
         self.y_label = tk.Label(self, text="Y: ")
-        self.y_label.place(x=780, y=100)
+        self.y_label.place(x=800, y=400)
 
         self.z_label = tk.Label(self, text="Z: ")
-        self.z_label.place(x=840, y=100)
+        self.z_label.place(x=880, y=400)
 
-        self.height_label = tk.Label(self, text="Height: ")
-        self.height_label.place(x=720, y=200)
+        self.a_label = tk.Label(self, text="A: ")
+        self.a_label.place(x=720, y=500)
 
-        self.width_label = tk.Label(self, text="Width: ")
-        self.width_label.place(x=840, y=200)
+        self.b_label = tk.Label(self, text="B: ")
+        self.b_label.place(x=800, y=500)
+
+        self.c_label = tk.Label(self, text="C: ")
+        self.c_label.place(x=880, y=500)
     
     def free_lock(self):
         self.lock = False
+    
+    def update_label(self, label, text):
+        label.config(text=text)
 
     def video_stream(self, cap, model_d, model_c):
     
@@ -58,7 +82,14 @@ class ControlPanel(tk.Tk):
             
             self.lock = True
 
+            self.update_label(self.object_x_label, "X :" + str(x_pixel))
+            self.update_label(self.object_y_label, "Y :" + str(y_pixel))
+            self.update_label(self.object_height_label, "Height :" + str(h_pixel))
+            self.update_label(self.object_width_label, "Width :" + str(w_pixel))
+
+
             x_mm, y_mm, w_mm, h_mm = pixels2mm(x_pixel, y_pixel, w_pixel, h_pixel)
+            
             signal_object(x_mm, y_mm)
 
             self.after(10000, classify_object, model_d, model_c, cap)
@@ -75,4 +106,4 @@ class ControlPanel(tk.Tk):
         self.label_img.img_tk = img_tk
         self.label_img.configure(image=img_tk)
 
-        self.label_img.after(10, self.video_stream, cap, model_d, model_c)
+        self.label_img.after(20, self.video_stream, cap, model_d, model_c)

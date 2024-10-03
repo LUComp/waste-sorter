@@ -9,11 +9,14 @@ def process_frame(frame, model):
     # Get result as DataFrame
     df = results.pandas().xyxy[0]
 
+    is_detected = False
+
+    if df.empty:
+        return frame, is_detected, 0, 0, 0, 0
+
     # Get the width of the frame
     frame_width = frame.shape[1]
     frame_mid_x = frame_width // 2  # Screen midpoint (x-axis)
-
-    is_detected = False
 
     x_pixel = 0
     y_pixel = 0
@@ -21,11 +24,12 @@ def process_frame(frame, model):
     w_pixel = 0
 
     df['area'] = (df['xmax'] - df['xmin']) * (df['ymax'] - df['ymin'])
+    
     largest = df.loc[df['area'].idxmax()]
 
     confidence = largest['confidence']
 
-    if df.empty or confidence < 0.4:
+    if confidence < 0.4:
         return frame, is_detected, 0, 0, 0, 0
     
     # Coordinates
