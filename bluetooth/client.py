@@ -1,7 +1,7 @@
 import bluetooth
 
 # Specify the server's Bluetooth address (replace with actual address)
-server_address = 'B8:27:EB:9A:19:C0'  # Replace with the server's Bluetooth MAC address
+server_address = '14:13:33:0A:AF:32'  # Replace with the server's Bluetooth MAC address
 port = 1  # Same port number as the server
 
 # Create the client socket

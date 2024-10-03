@@ -5,7 +5,7 @@ server_socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 
 # Bind the socket to any available port on the Bluetooth adapter
 port = bluetooth.PORT_ANY
-server_socket.bind(("B8:27:EB:9A:19:C0", port))
+server_socket.bind(("14:13:33:0A:AF:32", port))
 
 # Start listening for incoming connections (backlog of 1)
 server_socket.listen(1)
