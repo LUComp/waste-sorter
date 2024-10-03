@@ -18,3 +18,6 @@ def classify_object(model_d, model_c, cap, client_socket, w_up):
     # bin = torch.argmax(logits, dim=1).cpu().detach().numpy()
 
     # move2bin(bin, w_up, client_socket)
+    
+    
+    

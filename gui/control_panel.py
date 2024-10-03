@@ -1,13 +1,16 @@
+from queue import Empty as QueueEmpty, Queue
 import tkinter as tk
 from PIL import Image, ImageTk
 import cv2
+from events.event import Event, EventLoop, EventType
 from vision.detect import process_frame
 from vision.classify import classify_object
-from kuka.comms import signal_grip, move2coords
+from kuka.comms import queuemove, signal_grip, move2coords
 from kuka.utils import pixels2mm
 from kuka_comm_lib import KukaRobot
 
 class ControlPanel(tk.Tk):
+    eloop: EventLoop
 
     def __init__(self, robot: KukaRobot, title="Waste Sorter"):
         super().__init__()
@@ -21,6 +24,9 @@ class ControlPanel(tk.Tk):
         self.lock = False
 
         self.robot = robot
+        self.eloop = EventLoop(self.after)
+        self.eloop.start()
+        
     
     def create_video_frame(self):
         self.frame_video = tk.Frame(self, width=600, height=400)
@@ -93,12 +99,16 @@ class ControlPanel(tk.Tk):
 
             x_mm, y_mm, w_mm, h_mm = pixels2mm(x_pixel, y_pixel, w_pixel, h_pixel)
             
-            move2coords(x_mm, y_mm, self.robot)
+            queuemove(self.eloop, self.robot, lambda: self.robot.goto(x_mm, y_mm))
+            self.eloop.run(lambda: classify_object(model_d, model_c, cap, client_socket, w_mm))
+            
+            
+            # move2coords(x_mm, y_mm, self.robot)
 
-            self.after(10000, classify_object, model_d, model_c, cap, client_socket, w_mm)
-            self.after(15000, signal_grip, 0, client_socket)
-            self.after(18000, move2coords, x_mm, y_mm, self.robot, True)
-            self.after(20000, self.free_lock)
+            # self.after(10000, classify_object, model_d, model_c, cap, client_socket, w_mm)
+            # self.after(15000, signal_grip, 0, client_socket)
+            # self.after(18000, move2coords, x_mm, y_mm, self.robot, True)
+            # self.after(20000, self.free_lock)
 
         processed_frame = cv2.cvtColor(processed_frame, cv2.COLOR_BGR2RGB)
         img_pil = Image.fromarray(processed_frame)
