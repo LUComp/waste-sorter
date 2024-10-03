@@ -21,29 +21,29 @@ class ControlPanel(tk.Tk):
     
     def create_video_frame(self):
         self.frame_video = tk.Frame(self, width=600, height=400)
-        self.frame_video.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
+        self.frame_video.grid(row=0, column=0, padx=10, pady=10)
 
         self.label_img = tk.Label(self.frame_video, width=600, height=400)
-        self.label_img.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
+        self.label_img.grid(row=0, column=0, padx=10, pady=10)
 
     def create_labels(self):
-        self.height_label = tk.Label(self, text="Height: ")
-        self.height_label.grid(row=1, column=1, padx=10, pady=10)
-
-        self.width_label = tk.Label(self, text="Width: ")
-        self.width_label.grid(row=2, column=1, padx=10, pady=10)
+        self.height_label = tk.Label(self, text="Object Details")
+        self.height_label.place(x=750, y=50)
 
         self.x_label = tk.Label(self, text="X: ")
-        self.x_label.grid(row=3, column=1, padx=10, pady=10)
+        self.x_label.place(x=720, y=100)
 
         self.y_label = tk.Label(self, text="Y: ")
-        self.y_label.grid(row=4, column=1, padx=10, pady=10)
+        self.y_label.place(x=780, y=100)
 
         self.z_label = tk.Label(self, text="Z: ")
-        self.z_label.grid(row=5, column=1, padx=10, pady=10)
+        self.z_label.place(x=840, y=100)
 
         self.height_label = tk.Label(self, text="Height: ")
-        self.height_label.grid(row=2, column=1, padx=10, pady=10)
+        self.height_label.place(x=720, y=200)
+
+        self.width_label = tk.Label(self, text="Width: ")
+        self.width_label.place(x=840, y=200)
     
     def free_lock(self):
         self.lock = False
@@ -52,17 +52,17 @@ class ControlPanel(tk.Tk):
     
         _, frame = cap.read()
 
-        processed_frame, is_mid, x_pixel, y_pixel,w,h = process_frame(frame, model_d)
+        processed_frame, is_detected, x_pixel, y_pixel, w_pixel, h_pixel = process_frame(frame, model_d)
 
-        if is_mid and not self.lock:
+        if is_detected and not self.lock:
             
             self.lock = True
 
-            x_mm, y_mm = pixels2mm(x_pixel, y_pixel)
+            x_mm, y_mm, w_mm, h_mm = pixels2mm(x_pixel, y_pixel, w_pixel, h_pixel)
             signal_object(x_mm, y_mm)
 
             self.after(10000, classify_object, model_d, model_c, cap)
-            self.after(10500, signal_grip, w, h)
+            self.after(10500, signal_grip, w_pixel, h_pixel)
             self.after(11000, self.free_lock)
 
         processed_frame = cv2.cvtColor(processed_frame, cv2.COLOR_BGR2RGB)

@@ -4,8 +4,10 @@ import torch
 
 if __name__ == "__main__":      
 
+      device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
       model_d = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
-      model_c = torch.load('checkpoints/trash.pth')
+      model_c = torch.load('checkpoints/trash.pth', map_location=device)
       
       cap = cv2.VideoCapture(0)
 

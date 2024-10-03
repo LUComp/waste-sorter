@@ -13,7 +13,7 @@ def process_frame(frame, model):
     frame_width = frame.shape[1]
     frame_mid_x = frame_width // 2  # Screen midpoint (x-axis)
 
-    is_mid = False
+    is_detected = False
 
     x_pixel = 0
     y_pixel = 0
@@ -42,9 +42,9 @@ def process_frame(frame, model):
 
         # If the rectangle's center is close to the middle of the frame, set "True"
         if abs(x_pixel - frame_mid_x) < 100:  # 50 pixel proximity tolerance
-            is_mid = True 
+            is_detected = True 
 
-    return frame, is_mid, x_pixel, y_pixel, h_pixel, w_pixel
+    return frame, is_detected, x_pixel, y_pixel, h_pixel, w_pixel
      
 
 
