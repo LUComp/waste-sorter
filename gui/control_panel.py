@@ -93,11 +93,11 @@ class ControlPanel(tk.Tk):
 
             x_mm, y_mm, w_mm, h_mm = pixels2mm(x_pixel, y_pixel, w_pixel, h_pixel)
             
-            move2coords(x_mm, y_mm, robot)
+            move2coords(x_mm, y_mm, self.robot)
 
             self.after(10000, classify_object, model_d, model_c, cap, client_socket, w_mm)
             self.after(15000, signal_grip, 0, client_socket)
-            self.after(18000, move2coords, x_mm, y_mm, robot, True)
+            self.after(18000, move2coords, x_mm, y_mm, self.robot, True)
             self.after(20000, self.free_lock)
 
         processed_frame = cv2.cvtColor(processed_frame, cv2.COLOR_BGR2RGB)
