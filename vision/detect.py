@@ -1,6 +1,4 @@
 import cv2
-from utils.comms import signal_object
-from utils.kinematics import pixels2coords
 
 def process_frame(frame, model):
     img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -44,11 +42,7 @@ def process_frame(frame, model):
 
         # If the rectangle's center is close to the middle of the frame, set "True"
         if abs(x_pixel - frame_mid_x) < 100:  # 50 pixel proximity tolerance
-            is_mid = True
-
-    if is_mid:
-        x_mm, y_mm = pixels2coords(x_pixel, y_pixel)
-        signal_object(x_mm, y_mm)
+            is_mid = True 
 
     return frame, is_mid, x_pixel, y_pixel, h_pixel, w_pixel
      

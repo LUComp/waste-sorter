@@ -3,7 +3,8 @@ from PIL import Image, ImageTk
 import cv2
 from vision.detect import process_frame
 from vision.classify import classify_object
-from utils.comms import signal_grip
+from util.comms import signal_grip, signal_object
+from util.kinematics import pixels2mm
 
 class ControlPanel(tk.Tk):
 
@@ -15,6 +16,8 @@ class ControlPanel(tk.Tk):
   
         self.create_video_frame()
         self.create_labels()
+
+        self.lock = False
     
     def create_video_frame(self):
         self.frame_video = tk.Frame(self, width=600, height=400)
@@ -42,16 +45,25 @@ class ControlPanel(tk.Tk):
         self.height_label = tk.Label(self, text="Height: ")
         self.height_label.grid(row=2, column=1, padx=10, pady=10)
     
+    def free_lock(self):
+        self.lock = False
+
     def video_stream(self, cap, model_d, model_c):
     
         _, frame = cap.read()
 
-        processed_frame, is_mid,_,_,w,h = process_frame(frame, model_d)
+        processed_frame, is_mid, x_pixel, y_pixel,w,h = process_frame(frame, model_d)
 
-        if is_mid:
-            print("Object detected, waiting 2 seconds...")
-            self.after(2000, classify_object, model_d, model_c)
-            self.after(2500, signal_grip, w, h)
+        if is_mid and not self.lock:
+            
+            self.lock = True
+
+            x_mm, y_mm = pixels2mm(x_pixel, y_pixel)
+            signal_object(x_mm, y_mm)
+
+            self.after(10000, classify_object, model_d, model_c, cap)
+            self.after(10500, signal_grip, w, h)
+            self.after(11000, self.free_lock)
 
         processed_frame = cv2.cvtColor(processed_frame, cv2.COLOR_BGR2RGB)
         img_pil = Image.fromarray(processed_frame)
