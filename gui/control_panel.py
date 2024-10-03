@@ -3,8 +3,8 @@ from PIL import Image, ImageTk
 import cv2
 from vision.detect import process_frame
 from vision.classify import classify_object
-from util.comms import signal_grip, signal_object
-from util.kinematics import pixels2mm
+from kuka.comms import signal_grip, signal_object
+from kuka.kinematics import pixels2mm
 
 class ControlPanel(tk.Tk):
 

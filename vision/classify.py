@@ -1,6 +1,6 @@
 import torch
 from vision.detect import process_frame
-from util.comms import send_bin
+from kuka.comms import send_bin
 
 def crop_bg(frame, x, y, h, w):
     pass
