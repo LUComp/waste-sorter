@@ -44,17 +44,20 @@ class ControlPanel(tk.Tk):
         self.object_label = tk.Label(self, text="Object Details")
         self.object_label.place(x=750, y=50)
 
+        self.object_detected_label = tk.Label(self, text="Object detected: False")
+        self.object_detected_label.place(x=720, y=100)
+
         self.object_x_label = tk.Label(self, text="X: ")
-        self.object_x_label.place(x=720, y=100)
+        self.object_x_label.place(x=720, y=150)
 
         self.object_y_label = tk.Label(self, text="Y: ")
-        self.object_y_label.place(x=820, y=100)
+        self.object_y_label.place(x=820, y=150)
 
         self.object_height_label = tk.Label(self, text="Height: ")
-        self.object_height_label.place(x=720, y=150)
+        self.object_height_label.place(x=720, y=200)
 
         self.object_width_label = tk.Label(self, text="Width: ")
-        self.object_width_label.place(x=820, y=150)
+        self.object_width_label.place(x=820, y=200)
 
         self.arm_label = tk.Label(self, text="Arm Coordinates ")
         self.arm_label.place(x=750, y=300)
@@ -89,6 +92,9 @@ class ControlPanel(tk.Tk):
         processed_frame, is_detected, x_pixel, y_pixel, w_pixel, h_pixel = (
             process_frame(frame, model_d)
         )
+
+        self.update_label(self.object_detected_label, "Object detected:" + str(is_detected))
+
 
         if is_detected and not self.lock:
             self.lock = True
