@@ -4,35 +4,32 @@ import cv2
 import torch
 import bluetooth
 
-if __name__ == "__main__":     
+if __name__ == "__main__":
+    server_address = "B8:27:EB:9A:19:C0"  # raspberry pi server (claw)
+    port = 1
 
-      server_address = 'B8:27:EB:9A:19:C0'  # raspberry pi server (claw)
-      port = 1  
+    robot = KukaRobot("192.168.128.190")
+    robot.connect()
 
-      robot = KukaRobot("192.168.128.190")
-      robot.connect()
+    # Create the client socket
+    client_socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+    # client_socket.connect((server_address, port))
 
-      # Create the client socket
-      client_socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-      # client_socket.connect((server_address, port))
+    # print(f"Connected to the server at {server_address}")
 
-      # print(f"Connected to the server at {server_address}")
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-      device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    model_d = torch.hub.load("ultralytics/yolov5", "yolov5s", pretrained=True)
+    model_c = torch.load("checkpoints/trash.pth", map_location=device)
 
-      model_d = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
-      model_c = torch.load('checkpoints/trash.pth', map_location=device)
-      
-      cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0)
 
-      panel = ControlPanel(robot, "Waste Sorter")
+    panel = ControlPanel(robot, "Waste Sorter")
 
-      panel.video_stream(cap, model_d, model_c, client_socket)
+    panel.video_stream(cap, model_d, model_c, client_socket)
 
-      panel.mainloop()
+    panel.mainloop()
 
-      # Release the webcam when the window is closed
-      cap.release()
-      cv2.destroyAllWindows()
-
-
+    # Release the webcam when the window is closed
+    cap.release()
+    cv2.destroyAllWindows()

@@ -10,7 +10,7 @@ def handle_client(client_socket, client_address):
         data = client_socket.recv(1024)  # Receive up to 1024 bytes
         if not data:
             break
-        set_angle(pwm, pin, float(data.decode('utf-8')))
+        set_angle(pwm, pin, float(data.decode("utf-8")))
 
 
 if __name__ == "__main__":
@@ -34,8 +34,10 @@ if __name__ == "__main__":
 
     bluetooth_address, server_port = server_socket.getsockname()
 
-    print(f"Server is listening on Bluetooth address: {bluetooth_address}, port: {server_port}")
-    try: 
+    print(
+        f"Server is listening on Bluetooth address: {bluetooth_address}, port: {server_port}"
+    )
+    try:
         while True:
             print("Ready to accept connection...")
             client_socket, client_address = server_socket.accept()
@@ -48,6 +50,3 @@ if __name__ == "__main__":
                 client_socket.close()
     finally:
         server_socket.close()
-
-
-

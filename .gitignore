@@ -9,7 +9,7 @@ __pycache__/
 .AppleDouble
 .LSOverride
 
-# Ignore macOS system files
-.DS_Store
-.AppleDouble
-.LSOverride
+# :) im using poetry for fun, ignore this cause noone else does
+.venv
+poetry.lock
+pyproject.toml
