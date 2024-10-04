@@ -1,18 +1,14 @@
 from typing import Callable
 from cv2 import VideoCapture
+import cv2
 from kuka_comm_lib import KukaRobot
 import torch
 from events.event import EventLoop
 from kuka.constants import BIN_DICT, CLASSIFY_HEIGHT, OBJECT_HEIGHT
 from kuka.comms import movehome, queuegrip, queuemove
-
-
-def crop_bg(frame, x, y, h, w):
-    pass
-
+import numpy as np
 
 def classify_object(
-    model_d,
     model_c,
     cap: VideoCapture,
     client_socket,
@@ -22,6 +18,10 @@ def classify_object(
     unlock: Callable,
 ):
     _, frame = cap.read()
+    frame = cv2.resize(frame, (224, 224))
+    frame = np.transpose(frame, (2, 0, 1))
+    frame = torch.tensor(frame, dtype=torch.float).to("cuda")
+    frame = frame.unsqueeze(0)
 
     # _, _, x, y, h, w_down = process_frame(frame, model_d)
     # cropped_frame = crop_bg(frame, x, y, h, w_down)

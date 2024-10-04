@@ -95,7 +95,6 @@ class ControlPanel(tk.Tk):
 
         self.update_label(self.object_detected_label, "Object detected:" + str(is_detected))
 
-
         if is_detected and not self.lock:
             self.lock = True
 
@@ -114,7 +113,6 @@ class ControlPanel(tk.Tk):
 
             self.eloop.run(
                 lambda: classify_object(
-                    model_d,
                     model_c,
                     cap,
                     client_socket,
@@ -124,13 +122,6 @@ class ControlPanel(tk.Tk):
                     self.free_lock,
                 )
             )
-
-            # move2coords(x_mm, y_mm, self.robot)
-
-            # self.after(10000, classify_object, model_d, model_c, cap, client_socket, w_mm)
-            # self.after(15000, signal_grip, 0, client_socket)
-            # self.after(18000, move2coords, x_mm, y_mm, self.robot, True)
-            # self.after(20000, self.free_lock)
 
         processed_frame = cv2.cvtColor(processed_frame, cv2.COLOR_BGR2RGB)
         img_pil = Image.fromarray(processed_frame)
