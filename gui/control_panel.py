@@ -1,8 +1,7 @@
-from queue import Empty as QueueEmpty, Queue
 import tkinter as tk
 from PIL import Image, ImageTk
 import cv2
-from events.event import Event, EventLoop, EventType
+from events.event import EventLoop
 from kuka.constants import CLASSIFY_HEIGHT
 from vision.detect import process_frame
 from vision.classify import classify_object
@@ -10,31 +9,30 @@ from kuka.comms import movehome, queuegrip, queuemove
 from kuka.utils import pixels2mm, width2angle
 from kuka_comm_lib import KukaRobot
 
+
 class ControlPanel(tk.Tk):
     eloop: EventLoop
 
     def __init__(self, robot: KukaRobot, title="Waste Sorter"):
         super().__init__()
 
-        self.title("Waste Sorter")        #set title of main window
-        self.geometry("1000x600")                #set size of main window
-    
+        self.title("Waste Sorter")  # set title of main window
+        self.geometry("1000x600")  # set size of main window
+
         self.create_video_frame()
         self.create_labels()
 
         self.lock = True
-        
 
         self.robot = robot
         self.eloop = EventLoop(self.after)
-        
+
         queuemove(self.eloop, self.robot, lambda: movehome(self.robot))
         queuegrip(self.eloop, 1, None)
         self.eloop.run(self.free_lock)
-        
+
         self.eloop.start()
-        
-    
+
     def create_video_frame(self):
         self.frame_video = tk.Frame(self, width=600, height=400)
         self.frame_video.grid(row=0, column=0, padx=10, pady=10)
@@ -45,7 +43,6 @@ class ControlPanel(tk.Tk):
     def create_labels(self):
         self.object_label = tk.Label(self, text="Object Details")
         self.object_label.place(x=750, y=50)
-
 
         self.object_x_label = tk.Label(self, text="X: ")
         self.object_x_label.place(x=720, y=100)
@@ -59,10 +56,8 @@ class ControlPanel(tk.Tk):
         self.object_width_label = tk.Label(self, text="Width: ")
         self.object_width_label.place(x=820, y=150)
 
-
         self.arm_label = tk.Label(self, text="Arm Coordinates ")
         self.arm_label.place(x=750, y=300)
-
 
         self.x_label = tk.Label(self, text="X: ")
         self.x_label.place(x=720, y=400)
@@ -81,21 +76,21 @@ class ControlPanel(tk.Tk):
 
         self.c_label = tk.Label(self, text="C: ")
         self.c_label.place(x=880, y=500)
-    
+
     def free_lock(self):
         self.lock = False
-    
+
     def update_label(self, label, text):
         label.config(text=text)
 
     def video_stream(self, cap: cv2.VideoCapture, model_d, model_c, client_socket=None):
-    
         _, frame = cap.read()
 
-        processed_frame, is_detected, x_pixel, y_pixel, w_pixel, h_pixel = process_frame(frame, model_d)
+        processed_frame, is_detected, x_pixel, y_pixel, w_pixel, h_pixel = (
+            process_frame(frame, model_d)
+        )
 
         if is_detected and not self.lock:
-            
             self.lock = True
 
             self.update_label(self.object_x_label, "X :" + str(x_pixel))
@@ -103,14 +98,27 @@ class ControlPanel(tk.Tk):
             self.update_label(self.object_height_label, "Height :" + str(h_pixel))
             self.update_label(self.object_width_label, "Width :" + str(w_pixel))
 
-
             x_mm, y_mm, w_mm, h_mm = pixels2mm(x_pixel, y_pixel, w_pixel, h_pixel)
-            
-            queuemove(self.eloop, self.robot, lambda: self.robot.goto(x_mm, y_mm, CLASSIFY_HEIGHT))
-            
-            self.eloop.run(lambda: classify_object(model_d, model_c, cap, client_socket, width2angle(w_mm), self.eloop, self.robot, self.free_lock))
-            
-            
+
+            queuemove(
+                self.eloop,
+                self.robot,
+                lambda: self.robot.goto(x_mm, y_mm, CLASSIFY_HEIGHT),
+            )
+
+            self.eloop.run(
+                lambda: classify_object(
+                    model_d,
+                    model_c,
+                    cap,
+                    client_socket,
+                    width2angle(w_mm),
+                    self.eloop,
+                    self.robot,
+                    self.free_lock,
+                )
+            )
+
             # move2coords(x_mm, y_mm, self.robot)
 
             # self.after(10000, classify_object, model_d, model_c, cap, client_socket, w_mm)
@@ -128,4 +136,6 @@ class ControlPanel(tk.Tk):
         self.label_img.img_tk = img_tk
         self.label_img.configure(image=img_tk)
 
-        self.label_img.after(20, self.video_stream, cap, model_d, model_c, client_socket)
+        self.label_img.after(
+            20, self.video_stream, cap, model_d, model_c, client_socket
+        )

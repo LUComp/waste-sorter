@@ -10,4 +10,3 @@ OBJECT_HEIGHT = 0
 # AKA detect position
 HOME_POS = [1250, 550, DETECT_HEIGHT]
 TOOL_ANGLE = [0, 0, 0]
-
