@@ -7,6 +7,8 @@ from events.event import EventLoop
 from kuka.constants import BIN_DICT, CLASSIFY_HEIGHT, OBJECT_HEIGHT
 from kuka.comms import movehome, queuegrip, queuemove
 import numpy as np
+from torchvision import transforms
+import tkinter as tk
 
 def classify_object(
     model_c,
@@ -16,22 +18,15 @@ def classify_object(
     eloop: EventLoop,
     robot: KukaRobot,
     unlock: Callable,
+    class_label: tk.Label
 ):
     _, frame = cap.read()
-    frame = cv2.resize(frame, (224, 224))
-    frame = np.transpose(frame, (2, 0, 1))
-    frame = torch.tensor(frame, dtype=torch.float).to("cuda")
-    frame = frame.unsqueeze(0)
-
-    # _, _, x, y, h, w_down = process_frame(frame, model_d)
-    # cropped_frame = crop_bg(frame, x, y, h, w_down)
-    cropped_frame = frame
-    logits = model_c(cropped_frame)
-
+    
+    img = process_image(frame)
+    logits = model_c(img)
     dest_bin = int(torch.argmax(logits, dim=1).item())
 
-    # move2bin(bin, w_up, rp_socket)
-
+    class_label.config(text=f"Object Type: {get_label(dest_bin)}")
     # move to object
     queuegrip(eloop, 90, rp_socket)
     # move into position around/above object
@@ -52,3 +47,18 @@ def classify_object(
 
     queuemove(eloop, robot, lambda: movehome(robot))
     eloop.run(unlock)
+
+def process_image(img):
+    transform = transforms.Compose([
+    transforms.ToPILImage(),
+    transforms.Resize([224,224]),
+    transforms.ToTensor()
+    ])
+
+    device = torch.device("cuda")
+
+    return transform(img).unsqueeze(0).to(device)
+
+def get_label(idx):
+    labels = ["metal", "misc", "plastic", "glass", "paper", "cardboard"]
+    return(labels[idx])

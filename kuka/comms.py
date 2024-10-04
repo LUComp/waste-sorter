@@ -7,7 +7,7 @@ from kuka_comm_lib import KukaRobot
 def signal_grip(angle, rp_socket):
     if (angle < 0) or (angle > 90):
         raise ValueError("Grip angle must be between 0 and 90 degrees")
-    rp_socket.send(angle)
+    rp_socket.send(str(angle))
 
 
 def queuemove(e: EventLoop, r: KukaRobot, func: Callable):

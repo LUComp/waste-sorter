@@ -1,31 +1,22 @@
 import bluetooth
 
-# Raspberry Pi server address (replace with your Pi's Bluetooth address)
-server_address = "B8:27:EB:9A:19:C0"  # Example address
-port = 1  # Port number for the Bluetooth connection (1 for RFCOMM)
+server_address = "B8:27:EB:9A:19:C0" 
+port = 1 
 
-# Create the Bluetooth client socket
 rp_socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 
 try:
-    # Connect to the Raspberry Pi's Bluetooth server
     rp_socket.connect((server_address, port))
     print(f"Connected to the server at {server_address}")
 
     while True:
-        # Ask the user for an angle between 0 and 180
         angle = input("Enter the angle (0 to 180, or 'q' to quit): ")
-
-        # Allow the user to exit the loop
         if angle.lower() == "q":
             print("Exiting...")
             break
-
-        # Validate the input and send the angle to the Raspberry Pi
         try:
             angle = int(angle)
             if 0 <= angle <= 180:
-                # Send the angle as a string to the Raspberry Pi
                 rp_socket.send(str(angle))
                 print(f"Sent angle: {angle}")
             else:

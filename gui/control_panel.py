@@ -30,9 +30,8 @@ class ControlPanel(tk.Tk):
         self.rp_socket = rp_socket
 
         queuemove(self.eloop, self.robot, lambda: movehome(self.robot))
-        queuegrip(self.eloop, 0, None)
+        queuegrip(self.eloop, 0, self.rp_socket)
         self.eloop.run(self.free_lock)
-
         self.eloop.start()
 
     def create_video_frame(self):
@@ -82,11 +81,28 @@ class ControlPanel(tk.Tk):
         self.c_label = tk.Label(self, text="C: ")
         self.c_label.place(x=880, y=500)
 
+        self.class_label = tk.Label(self, text="Object Type: ")
+        self.class_label.place(x=250, y=500)
+        
+        self.quit_buttpm = tk.Button(self, text = "Quit Safely", bg = "red", fg = "white", font = ("Arial", 30), command = self.quit)
+
+    def quit(self):
+        pass
+
     def free_lock(self):
         self.lock = False
 
     def update_label(self, label, text):
         label.config(text=text)
+    
+    def update_pos_labels(self, current_pos):
+        self.update_label(label=self.x_label, text=f"X: {current_pos.x}")
+        self.update_label(label=self.y_label, text=f"Y: {current_pos.y}")
+        self.update_label(label=self.z_label, text=f"Z: {current_pos.z}")
+        self.update_label(label=self.a_label, text=f"A: {current_pos.a}")
+        self.update_label(label=self.b_label, text=f"B: {current_pos.b}")
+        self.update_label(label=self.c_label, text=f"C: {current_pos.c}")
+
 
     def video_stream(self, cap: cv2.VideoCapture, model_d, model_c):
         _, frame = cap.read()
@@ -98,19 +114,22 @@ class ControlPanel(tk.Tk):
         self.update_label(self.object_detected_label, "Object detected:" + str(is_detected))
 
         if is_detected and not self.lock:
+
+            print("In critical section...")
+
             self.lock = True
 
-            self.update_label(self.object_x_label, "X :" + str(x_pixel))
-            self.update_label(self.object_y_label, "Y :" + str(y_pixel))
-            self.update_label(self.object_height_label, "Height :" + str(h_pixel))
-            self.update_label(self.object_width_label, "Width :" + str(w_pixel))
+            x_mm, y_mm, w_mm, h_mm = pixels2mm(x_pixel, y_pixel, w_pixel, h_pixel)
 
-            x_mm, y_mm, w_mm, _ = pixels2mm(x_pixel, y_pixel, w_pixel, h_pixel)
+            self.update_label(self.object_x_label, "X :" + str(y_mm))
+            self.update_label(self.object_y_label, "Y :" + str(x_mm))
+            self.update_label(self.object_height_label, "Height :" + str(w_mm))
+            self.update_label(self.object_width_label, "Width :" + str(h_mm))
 
             queuemove(
                 self.eloop,
                 self.robot,
-                lambda: self.robot.goto(x_mm, y_mm, CLASSIFY_HEIGHT),
+                lambda: self.robot.goto(x=x_mm, y=y_mm, z=CLASSIFY_HEIGHT),
             )
 
             self.eloop.run(
@@ -118,10 +137,11 @@ class ControlPanel(tk.Tk):
                     model_c,
                     cap,
                     self.rp_socket,
-                    width2angle(w_mm),
+                    0,
                     self.eloop,
                     self.robot,
                     self.free_lock,
+                    self.class_label
                 )
             )
 
@@ -134,6 +154,9 @@ class ControlPanel(tk.Tk):
 
         self.label_img.img_tk = img_tk
         self.label_img.configure(image=img_tk)
+
+        current_pos = self.robot.get_current_position()
+        self.update_pos_labels(current_pos)
 
         self.label_img.after(
             20, self.video_stream, cap, model_d, model_c

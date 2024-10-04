@@ -1,6 +1,6 @@
 from enum import Enum
 from queue import Queue, Empty as QueueEmpty
-from typing import Any, Callable, Literal, NamedTuple
+from typing import Any, Callable, Literal, NamedTuple, Union
 
 
 class EventType(Enum):
@@ -16,9 +16,9 @@ class Event(NamedTuple):
 
 class EventLoop:
     event_queue: Queue[Event]
-    after: Callable[[int | Literal["idle"], Callable], Any]
+    after: Callable[[Union[int, Literal["idle"]], Callable], Any]
 
-    def __init__(self, trigger_func: Callable[[int | Literal["idle"], Callable], Any]):
+    def __init__(self, trigger_func: Callable[[Union[int, Literal["idle"]], Callable], Any]):
         self.event_queue = Queue()
         self.after = trigger_func
 
@@ -31,6 +31,7 @@ class EventLoop:
         except QueueEmpty:
             # no events, wait.
             self.after(100, self.handle_event)
+            return
 
         if event.type == EventType.SLEEP:
             self.after(event.data["duration"], self.handle_event)

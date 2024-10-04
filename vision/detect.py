@@ -1,11 +1,14 @@
 import cv2
-
+import warnings
 
 def process_frame(frame, model):
     img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
     # Run model
-    results = model(img)
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        results = model(img)
 
     # Get result as DataFrame
     df = results.pandas().xyxy[0]
@@ -30,7 +33,7 @@ def process_frame(frame, model):
 
     confidence = largest["confidence"]
 
-    if confidence < 0.4:
+    if confidence < 0.1:
         return frame, is_detected, 0, 0, 0, 0
 
     # Coordinates
@@ -52,7 +55,7 @@ def process_frame(frame, model):
     cv2.circle(frame, (x_mid, y_mid), 5, (0, 0, 255), -1)
 
     # If the rectangle's center is close to the middle of the frame, set "True"
-    if abs(x_pixel - frame_mid_x) < 100:  # 50 pixel proximity tolerance
+    if abs(x_pixel - frame_mid_x) < 10000:  # 50 pixel proximity tolerance
         is_detected = True
 
     return frame, is_detected, x_min, y_min, w_pixel, h_pixel

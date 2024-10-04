@@ -1,36 +1,32 @@
 import math
-from constants import *
+from kuka.constants import *
 
 def calculate_base(angle_degrees, height):
     
     angle_radians = math.radians(angle_degrees)
-    base = height / math.tan(angle_radians)
+    base = height * math.tan(angle_radians)
     
     return base
 
 def pixels2mm(x_pixel, y_pixel, w_pixel, h_pixel):
     # camera resolution 1080/1920
-    # camera verticle angle 85, horizontal 50
-    w_mm = calculate_base(CAM_X_ANG, DETECT_HEIGHT) * 2
-    h_mm = calculate_base(CAM_Y_ANG, DETECT_HEIGHT) * 2
+    # camera verticle angle 48, horizontal 28.5
+    w_mm = calculate_base(CAM_X_ANG, DETECT_HEIGHT)
+    h_mm = calculate_base(CAM_Y_ANG, DETECT_HEIGHT)
 
-    x_obj_mid = x_pixel + w_pixel/2
-    y_obj_mid = y_pixel + h_pixel/2
+    x_obj_mid = x_pixel + (w_pixel/2)
+    y_obj_mid = y_pixel + (h_pixel/2)
     
-    x_ratio = (x_obj_mid/1920)*2
-    y_ratio = (y_obj_mid/1080)*2
+    x_ratio = (x_obj_mid/1080)
+    y_ratio = (y_obj_mid/1920)
 
-    if x_ratio > 1:
-        x_ratio -= 1
-    elif x_ratio < 1:
-        x_ratio = x_ratio - 1
+    if x_ratio != 0.5:
+        x_ratio -= 0.5
     else:
         x_ratio = 0
-    
-    if y_ratio > 1:
-        y_ratio -= 2
-    elif y_ratio < 1:
-        y_ratio = 1 - x_ratio
+
+    if y_ratio != 0.5:
+        y_ratio -= 0.5
     else:
         y_ratio = 0
 

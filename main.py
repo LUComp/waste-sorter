@@ -8,8 +8,9 @@ if __name__ == "__main__":
     server_address = "B8:27:EB:9A:19:C0"  # raspberry pi server (claw)
     port = 1
 
-    robot = KukaRobot("192.168.128.190")
+    robot = KukaRobot("192.168.128.195")
     robot.connect()
+    robot.set_speed(1)
 
     rp_socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
     rp_socket.connect((server_address, port))
