@@ -33,11 +33,12 @@ def classify_object(
     # move2bin(bin, w_up, client_socket)
 
     # move to object
-    queuegrip(eloop, 0, client_socket)
+    queuegrip(eloop, 90, client_socket)
     # move into position around/above object
     queuemove(eloop, robot, lambda: robot.goto(z=OBJECT_HEIGHT))
     # close around object
-    queuegrip(eloop, grip_angle, client_socket)
+    queuegrip(eloop, 0, client_socket)
+    # queuegrip(eloop, grip_angle, client_socket)
     # move up
     queuemove(eloop, robot, lambda: robot.goto(z=CLASSIFY_HEIGHT))
 
@@ -45,10 +46,9 @@ def classify_object(
 
     queuemove(eloop, robot, lambda: robot.goto(bin_x, bin_y))
     queuemove(eloop, robot, lambda: robot.goto(z=OBJECT_HEIGHT))
-    queuegrip(eloop, 0, client_socket)
+    queuegrip(eloop, 90, client_socket)
     queuemove(eloop, robot, lambda: robot.goto(z=CLASSIFY_HEIGHT))
-    # make the gripper appear closed when not in use
-    queuegrip(eloop, 1, client_socket)
+    queuegrip(eloop, 0, client_socket)
 
     queuemove(eloop, robot, lambda: movehome(robot))
     eloop.run(unlock)

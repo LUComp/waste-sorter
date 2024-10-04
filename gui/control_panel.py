@@ -28,7 +28,7 @@ class ControlPanel(tk.Tk):
         self.eloop = EventLoop(self.after)
 
         queuemove(self.eloop, self.robot, lambda: movehome(self.robot))
-        queuegrip(self.eloop, 1, None)
+        queuegrip(self.eloop, 0, None)
         self.eloop.run(self.free_lock)
 
         self.eloop.start()
