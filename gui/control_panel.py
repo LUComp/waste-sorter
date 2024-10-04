@@ -13,7 +13,7 @@ from kuka_comm_lib import KukaRobot
 class ControlPanel(tk.Tk):
     eloop: EventLoop
 
-    def __init__(self, robot: KukaRobot, title="Waste Sorter"):
+    def __init__(self, robot: KukaRobot, rp_socket, title="Waste Sorter"):
         super().__init__()
 
         self.title("Waste Sorter")  # set title of main window
@@ -26,6 +26,8 @@ class ControlPanel(tk.Tk):
 
         self.robot = robot
         self.eloop = EventLoop(self.after)
+
+        self.rp_socket = rp_socket
 
         queuemove(self.eloop, self.robot, lambda: movehome(self.robot))
         queuegrip(self.eloop, 0, None)
@@ -86,7 +88,7 @@ class ControlPanel(tk.Tk):
     def update_label(self, label, text):
         label.config(text=text)
 
-    def video_stream(self, cap: cv2.VideoCapture, model_d, model_c, client_socket=None):
+    def video_stream(self, cap: cv2.VideoCapture, model_d, model_c):
         _, frame = cap.read()
 
         processed_frame, is_detected, x_pixel, y_pixel, w_pixel, h_pixel = (
@@ -103,7 +105,7 @@ class ControlPanel(tk.Tk):
             self.update_label(self.object_height_label, "Height :" + str(h_pixel))
             self.update_label(self.object_width_label, "Width :" + str(w_pixel))
 
-            x_mm, y_mm, w_mm, h_mm = pixels2mm(x_pixel, y_pixel, w_pixel, h_pixel)
+            x_mm, y_mm, w_mm, _ = pixels2mm(x_pixel, y_pixel, w_pixel, h_pixel)
 
             queuemove(
                 self.eloop,
@@ -115,7 +117,7 @@ class ControlPanel(tk.Tk):
                 lambda: classify_object(
                     model_c,
                     cap,
-                    client_socket,
+                    self.rp_socket,
                     width2angle(w_mm),
                     self.eloop,
                     self.robot,
@@ -134,5 +136,5 @@ class ControlPanel(tk.Tk):
         self.label_img.configure(image=img_tk)
 
         self.label_img.after(
-            20, self.video_stream, cap, model_d, model_c, client_socket
+            20, self.video_stream, cap, model_d, model_c
         )

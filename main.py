@@ -11,11 +11,9 @@ if __name__ == "__main__":
     robot = KukaRobot("192.168.128.190")
     robot.connect()
 
-    # Create the client socket
-    client_socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-    # client_socket.connect((server_address, port))
-
-    # print(f"Connected to the server at {server_address}")
+    rp_socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+    rp_socket.connect((server_address, port))
+    print(f"Connected to the raspberrypi server at {server_address}")
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -24,9 +22,9 @@ if __name__ == "__main__":
 
     cap = cv2.VideoCapture(0)
 
-    panel = ControlPanel(robot, "Waste Sorter")
+    panel = ControlPanel(robot, rp_socket, "Waste Sorter")
 
-    panel.video_stream(cap, model_d, model_c, client_socket)
+    panel.video_stream(cap, model_d, model_c)
 
     panel.mainloop()
 

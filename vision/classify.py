@@ -11,7 +11,7 @@ import numpy as np
 def classify_object(
     model_c,
     cap: VideoCapture,
-    client_socket,
+    rp_socket,
     grip_angle: float,
     eloop: EventLoop,
     robot: KukaRobot,
@@ -30,15 +30,15 @@ def classify_object(
 
     dest_bin = int(torch.argmax(logits, dim=1).item())
 
-    # move2bin(bin, w_up, client_socket)
+    # move2bin(bin, w_up, rp_socket)
 
     # move to object
-    queuegrip(eloop, 90, client_socket)
+    queuegrip(eloop, 90, rp_socket)
     # move into position around/above object
     queuemove(eloop, robot, lambda: robot.goto(z=OBJECT_HEIGHT))
     # close around object
-    queuegrip(eloop, 0, client_socket)
-    # queuegrip(eloop, grip_angle, client_socket)
+    queuegrip(eloop, 0, rp_socket)
+    # queuegrip(eloop, grip_angle, rp_socket)
     # move up
     queuemove(eloop, robot, lambda: robot.goto(z=CLASSIFY_HEIGHT))
 
@@ -46,9 +46,9 @@ def classify_object(
 
     queuemove(eloop, robot, lambda: robot.goto(bin_x, bin_y))
     queuemove(eloop, robot, lambda: robot.goto(z=OBJECT_HEIGHT))
-    queuegrip(eloop, 90, client_socket)
+    queuegrip(eloop, 90, rp_socket)
     queuemove(eloop, robot, lambda: robot.goto(z=CLASSIFY_HEIGHT))
-    queuegrip(eloop, 0, client_socket)
+    queuegrip(eloop, 0, rp_socket)
 
     queuemove(eloop, robot, lambda: movehome(robot))
     eloop.run(unlock)
