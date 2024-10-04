@@ -3,10 +3,11 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import cv2
 from events.event import Event, EventLoop, EventType
+from kuka.constants import CLASSIFY_HEIGHT
 from vision.detect import process_frame
 from vision.classify import classify_object
-from kuka.comms import queuemove, signal_grip, move2coords
-from kuka.utils import pixels2mm
+from kuka.comms import movehome, queuegrip, queuemove
+from kuka.utils import pixels2mm, width2angle
 from kuka_comm_lib import KukaRobot
 
 class ControlPanel(tk.Tk):
@@ -21,10 +22,16 @@ class ControlPanel(tk.Tk):
         self.create_video_frame()
         self.create_labels()
 
-        self.lock = False
+        self.lock = True
+        
 
         self.robot = robot
         self.eloop = EventLoop(self.after)
+        
+        queuemove(self.eloop, self.robot, lambda: movehome(self.robot))
+        queuegrip(self.eloop, 1, None)
+        self.eloop.run(self.free_lock)
+        
         self.eloop.start()
         
     
@@ -81,7 +88,7 @@ class ControlPanel(tk.Tk):
     def update_label(self, label, text):
         label.config(text=text)
 
-    def video_stream(self, cap, model_d, model_c, client_socket=None):
+    def video_stream(self, cap: cv2.VideoCapture, model_d, model_c, client_socket=None):
     
         _, frame = cap.read()
 
@@ -99,8 +106,9 @@ class ControlPanel(tk.Tk):
 
             x_mm, y_mm, w_mm, h_mm = pixels2mm(x_pixel, y_pixel, w_pixel, h_pixel)
             
-            queuemove(self.eloop, self.robot, lambda: self.robot.goto(x_mm, y_mm))
-            self.eloop.run(lambda: classify_object(model_d, model_c, cap, client_socket, w_mm))
+            queuemove(self.eloop, self.robot, lambda: self.robot.goto(x_mm, y_mm, CLASSIFY_HEIGHT))
+            
+            self.eloop.run(lambda: classify_object(model_d, model_c, cap, client_socket, width2angle(w_mm), self.eloop, self.robot, self.free_lock))
             
             
             # move2coords(x_mm, y_mm, self.robot)

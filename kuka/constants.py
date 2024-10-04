@@ -1,7 +1,13 @@
-X_HOME = 1250
-Y_HOME = 550
-
 Z_HOOK = 350
 Z_CLAW = 220
 
-BIN_DICT = {"cardboard": [0, 0, 0], "plastic": [0, 0, 0], "paper": [0, 0, 0], "misc": [0, 0, 0], "metal": [0, 0, 0], "glass": [0, 0, 0]}
+BIN_DICT = {0: [0, 0], 1: [0, 0], 2: [0, 0], 3: [0, 0], 4: [0, 0], 5: [0, 0]}
+
+DETECT_HEIGHT = 0
+CLASSIFY_HEIGHT = 0
+OBJECT_HEIGHT = 0
+
+# AKA detect position
+HOME_POS = [1250, 550, DETECT_HEIGHT]
+TOOL_ANGLE = [0, 0, 0]
+
