@@ -2,6 +2,10 @@
 
 This repository showcases an automatic waste sorting system.
 
+<div align="center">
+  <img src="res/demo.gif" alt="demo" width="500"/>
+</div>
+
 ## About
 
 This was developed as part of an international collaborative initiative between the Lancaster University campuses of Leipzig (Germany) and Bailrigg (England). 
