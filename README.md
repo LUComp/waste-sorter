@@ -1,10 +1,49 @@
 # Waste Sorter
 
+This repository showcases an automatic waste sorting system.
+
+<div align="center">
+  <img src="res/demo.gif" alt="demo" width="500"/>
+</div>
+
+## About
+
+This was developed as part of an international collaborative initiative between the Lancaster University campuses of Leipzig (Germany) and Bailrigg (England). 
+
 ## Resnet50
 ### Dataset
-The dataset can be downloaded [here](https://www.dropbox.com/scl/fi/iqdp1yqlpczd6oyoqu2a8/dataset.zip?rlkey=l1qq1vq9zdma1095nw1boymoc&st=kdaaomas&dl=0)
+Custom curated dataset of labeled trash/waste images. These are spread across 6 subfolders (waste types). The dataset can be downloaded [here](https://www.dropbox.com/scl/fi/iqdp1yqlpczd6oyoqu2a8/dataset.zip?rlkey=l1qq1vq9zdma1095nw1boymoc&st=kdaaomas&dl=0).
 ### Model
-The model can be downloaded [here]()
+
+Fine-tuned pre-trained ResNet50 architecture. Model weights can be downloaded [here](https://www.dropbox.com/scl/fo/8lik3r8dvd46oc7je5egg/AJz9jQDM7P-uupWw3HokPFw?rlkey=ovap0z4vufqskny28zqy3v89v&st=quylbvca&dl=0).
+
+<div align="center">
+  <img src="res/confusion.png" alt="demo" width="300"/>
+  <p><em>Confusion matrix of testing set from reduced dataset.</em></p>
+</div>
+
+## Dependencies
+
+```
+cd waste-sorter
+conda env create -f env.yaml
+conda activate kuka
+```
+
+## HW Specifics
+
+### Raspberry Pi
+
+- Pair (bluetooth) raspberry pi and set to "trusted" on main device.
+- Connect servo motor's signal to pin 11 (GPIO 0)
+
+### Claw
+
+- some text
+
+### Kuka Arm
+
+- some text
 
 ## Control Flow
 
@@ -35,3 +74,14 @@ on classify done:
     move to detect
     unlock lock
 ```
+
+## Credits
+
+- [m4mbo](https://github.com/m4mbo) - Matias Barandiaran
+- [RedHatParichay](https://github.com/RedHatParichay) - Parichay Sachdev
+- Mustafa Azizi
+- Athar Syed
+- Osvaldo Catine
+- Mikelis Kamepe
+- Inderjot Sitt
+- Isaac Richardson
