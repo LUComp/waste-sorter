@@ -15,7 +15,12 @@ This was developed as part of an international collaborative initiative between 
 Custom curated dataset of labeled trash/waste images. These are spread across 6 subfolders (waste types). The dataset can be downloaded [here](https://www.dropbox.com/scl/fi/iqdp1yqlpczd6oyoqu2a8/dataset.zip?rlkey=l1qq1vq9zdma1095nw1boymoc&st=kdaaomas&dl=0).
 ### Model
 
-Fine-tuned pre-trained ResNet50 architecture. Model weights can be downloaded [here]().
+Fine-tuned pre-trained ResNet50 architecture. Model weights can be downloaded [here](https://www.dropbox.com/scl/fo/8lik3r8dvd46oc7je5egg/AJz9jQDM7P-uupWw3HokPFw?rlkey=ovap0z4vufqskny28zqy3v89v&st=quylbvca&dl=0).
+
+<div align="center">
+  <img src="res/confusion.png" alt="demo" width="300"/>
+  <p><em>Confusion matrix of testing set from reduced dataset.</em></p>
+</div>
 
 ## Dependencies
 
