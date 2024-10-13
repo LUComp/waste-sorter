@@ -77,8 +77,8 @@ on classify done:
 
 ## Credits
 
-- [m4mbo](https://github.com/m4mbo) - Matias Barandiaran
-- [RedHatParichay](https://github.com/RedHatParichay) - Parichay Sachdev
+- Matias Barandiaran ([m4mbo](https://github.com/m4mbo))
+- Parichay Sachdev ([RedHatParichay](https://github.com/RedHatParichay))
 - Mustafa Azizi
 - Athar Syed
 - Osvaldo Catine
